@@ -10,6 +10,11 @@ export class Simulator {
         this.year++;
         for (let person of this.people) {
             let tickResult = person.tick(this.year);
+            if (tickResult == null)
+            {
+                console.warn("Tick on dead person.");
+                continue;
+            }
             if (tickResult.baby != null) {
                 this.people.push(tickResult.baby);
             }
@@ -23,13 +28,13 @@ export class Simulator {
         let eve = new Person(Sex.Female, this.year, Color.Black);
         this.people.push(eve);
 
-        for(var i=0; i < 100; i++){
+        for(var i=0; i < 180; i++){
             console.log("Year " + i);
             this.tick();
         }
 
         let renderer = new Renderer();
-        renderer.draw(this.people[0]);
+        renderer.draw(this, this.people[0]);
 
     }
 }

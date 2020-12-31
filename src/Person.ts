@@ -1,5 +1,5 @@
 import { Config } from './Config';
-import { IRandom, Random } from '../src/IRandom';
+import { Randomizer } from '../src/IRandom';
 
 export class Person {
     
@@ -7,9 +7,8 @@ export class Person {
     config: Config = new Config();
     children: Array<Person> = [];
     birthYear: number;
-    deathYear: number = 0;
+    deathYear: number = -1;
     color: Color;
-    random: IRandom = new Random();
   
     constructor(sex: Sex, birthYear: number, color: Color) {
       this.sex = sex;
@@ -22,9 +21,9 @@ export class Person {
         let age = this.age(year);
         if (this.sex == Sex.Female 
             && age > 13 && age < 45
-            && this.random.random() > this.config.birthProbability(year, this)
+            && Randomizer.getInstance().random() > this.config.birthProbability(year, this)
             ) {
-            let sex = (this.random.random() < this.config.femaleBirthProb ? Sex.Female : Sex.Male)
+            let sex = (Randomizer.getInstance().random() < this.config.femaleBirthProb ? Sex.Female : Sex.Male)
             let child = new Person(sex, year, this.color);
             this.children.push(child);
             return child;
@@ -33,7 +32,7 @@ export class Person {
     }
 
     die(year: number) {
-        if (year - this.birthYear > 80) {
+        if (this.deathYear == -1 && year - this.birthYear > 80) {
             this.deathYear = year;
             return true;
         }
@@ -41,7 +40,10 @@ export class Person {
     }
 
     tick(year: number) {
-        return new PersonTick(this.die(year), this.birth(year));
+        if (this.deathYear == -1){
+            return new PersonTick(this.die(year), this.birth(year));
+        }
+        return null;
     }
 
     deathAge() {
@@ -49,7 +51,10 @@ export class Person {
     }
 
     age(year: number) {
-        return year - this.birthYear;
+        if (this.deathYear == -1){
+            return year - this.birthYear;
+        }
+        return this.deathAge;
     }
 
   }

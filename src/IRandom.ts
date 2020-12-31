@@ -21,3 +21,20 @@ export class Constant implements IRandom {
     }
 
 }
+
+export class Randomizer implements IRandom {
+    static instance: Randomizer | null = null;
+    r: IRandom = new Random();
+
+    static getInstance() {
+        if (this.instance == null) {
+            this.instance = new Randomizer();
+        }
+        return this.instance;
+    }
+
+    random() {
+        return this.r.random();
+    }
+
+}
