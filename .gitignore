@@ -8,3 +8,6 @@
 .classpath
 .idea
 node_modules
+out
+dist
+.DS_Store
