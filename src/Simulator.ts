@@ -6,28 +6,34 @@ export class Simulator {
     year: number=0;
     people: Array<Person> = [];
 
-    tick () {
-        this.year++;
-        for (let person of this.people) {
-            let tickResult = person.tick(this.year);
-            if (tickResult == null)
-            {
-                console.warn("Tick on dead person.");
-                continue;
+    tick (num: Number = 1) {
+        for (let i = 0; i < num; i++) {
+            this.year++;
+            let babies =  new Array<Person>();
+            for (let person of this.people) {
+                let tickResult = person.tick(this.year);
+                if (tickResult == null)
+                {
+                    console.warn("Tick on dead person.");
+                    continue;
+                }
+                if (tickResult.baby != null) {
+                    babies.push(tickResult.baby);
+                }
+                if (tickResult.died) {
+                    this.people.splice(this.people.indexOf(person),1);
+                }
             }
-            if (tickResult.baby != null) {
-                this.people.push(tickResult.baby);
-            }
-            if (tickResult.died) {
-                this.people.splice(this.people.indexOf(person),1);
-            }
+            this.people = this.people.concat(babies);
         }
     } 
 
-    run () {
+    init () {
         let eve = new Person(Sex.Female, this.year, Color.Black);
         this.people.push(eve);
+    }
 
+    run () {
         for(var i=0; i < 180; i++){
             console.log("Year " + i);
             this.tick();

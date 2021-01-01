@@ -1,5 +1,5 @@
 import { Config } from './Config';
-import { Randomizer } from '../src/IRandom';
+import { Randomizer, Rando } from '../src/IRandom';
 
 export class Person {
     
@@ -21,9 +21,9 @@ export class Person {
         let age = this.age(year);
         if (this.sex == Sex.Female 
             && age > 13 && age < 45
-            && Randomizer.getInstance().random() > this.config.birthProbability(year, this)
+            && Randomizer.getInstance().random(Rando.Birth) > this.config.birthProbability(year, this)
             ) {
-            let sex = (Randomizer.getInstance().random() < this.config.femaleBirthProb ? Sex.Female : Sex.Male)
+            let sex = (Randomizer.getInstance().random(Rando.Sex) < this.config.femaleBirthProb ? Sex.Female : Sex.Male)
             let child = new Person(sex, year, this.color);
             this.children.push(child);
             return child;

@@ -1,25 +1,28 @@
 export interface IRandom {
-    random(): number;
+    random(rando: Rando): number;
 }
 
 export class Random implements IRandom {
-    random () {
+    random (rando: Rando) {
         return Math.random();
     }
 }
 
 export class Constant implements IRandom {
-    value: number;
+    defaultVal: number;
+    randos: Map<Rando,number> = new Map<Rando,number>();
 
-    constructor(value: number)
+    constructor(defaultVal: number)
     {
-        this.value = value;
+        this.defaultVal = defaultVal;
     }
     
-    random () {
-        return this.value;
+    random (rando: Rando) {
+        if (this.randos.has(rando)) {
+            return this.randos.get(rando)!;
+        }
+        return this.defaultVal;
     }
-
 }
 
 export class Randomizer implements IRandom {
@@ -33,8 +36,18 @@ export class Randomizer implements IRandom {
         return this.instance;
     }
 
-    random() {
-        return this.r.random();
+    setRandomizer(r: IRandom) {
+        this.r = r;
     }
 
+    random(rando: Rando) {
+        return this.r.random(rando);
+    }
+
+}
+
+export enum Rando {
+    Birth = 0,
+    Death,
+    Sex
 }
